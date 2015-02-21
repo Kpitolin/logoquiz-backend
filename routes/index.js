@@ -4,25 +4,20 @@ var router = express.Router();
 // node mysql
 var mysql      = require('mysql');
 var connection = mysql.createConnection({
-  host     : 'db566290755.db.1and1.com',
-  user     : 'dbo566290755',
-  password : '505932qq',
-  database : 'db566290755'
+  host     : 'localhost', //'db566290755.db.1and1.com',
+  user     : 'root', //'dbo566290755',
+  socketPath: 'mysql-socket-path',
+  password : 'mypass'//'505932qq',
+  //database : 'db566290755'
 });
-/*var pool      =    mysql.createPool({
-    connectionLimit : 100, //important
-    host     : 'db566290755.db.1and1.com',
-    user     : 'dbo566290755',
-    password : '',
-    database : 'db566290755'
-});*/
+
 
 /* Home page */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Logo quizz backend' });
+  res.render('index', { title: 'Logo quizz backend (for tests)' });
 });
 
-/* */ 
+/* Get current user's rank*/ 
 function get_rank(connection, mail){
 
 	var query = 'SELECT best_score, FIND_IN_SET( best_score, ( SELECT GROUP_CONCAT( best_score' + 
@@ -35,7 +30,7 @@ function get_rank(connection, mail){
 	  		 return 0;
 	  	}
 	  	else {
-	  		return rank[0];
+	  		return rank[0].rank;
 	  	 }
 
 	});
@@ -52,7 +47,7 @@ function handle_database(req,res) {
         var strQuery = 'SELECT * FROM users WHERE mail = ?';
         connection.query(strQuery,[mail], function(err,rows){
             if(err)	{
-            	console.log('Error in select query');
+            	console.log('Error in select query ...\n\n');
 	  			//res.json({"code" : 100, "status" : "Error in select query"});
 	  			return;
 	  		}
@@ -61,7 +56,7 @@ function handle_database(req,res) {
 	  			var insertQuery = 'INSERT INTO users SET ?';
 	  			connection.query(strQuery, newUser, function(errorInsert,resultInsert){
 	  				if(errorInsert) {
-	  					console.log('Error in insert query');
+	  					console.log('Error in insert query ...\n\n');
 	  					//res.json({"code" : 100, "status" : "Error in insert query"});
 	  					return;
 	  				}
@@ -81,7 +76,7 @@ function handle_database(req,res) {
 	  		 	updateQuery = 'UPDATE users SET best_score = ? WHERE mail = ?'
 	  		 	connection.query(updateQuery, [newScore, mail], function(errorUpdate, resultUpdate){
 	  		 		 if(errorUpdate) {
-	  		 		 	console.log('Error in Update query');
+	  		 		 	console.log('Error in Update query ...\n\n');
 	  				 	// res.json({"code" : 100, "status" : "Error in Update query"});
 	  				 	 return;
 	  				 }
@@ -110,12 +105,16 @@ router.get('/classement/:mail/:score', function(req, res, next) {
 		if(!err) {
 		    console.log("Database is connected ... \n\n"); 
 		    handle_database(req, res); 
-		     connection.end();  
+		     
 		} else {
+			console.log(err);
 		    console.log("Error connecting database ... \n\n");
+
 		}
 
 	});
+
+	connection.end(); 
 
 });
 	
