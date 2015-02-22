@@ -3,11 +3,13 @@ var router = express.Router();
 
 // node mysql
 var mysql      = require('mysql');
+//var connection  = require('express-myconnection'); 
 var connection = mysql.createConnection({
   host     : 'localhost', //'db566290755.db.1and1.com',
   user     : 'root', //'dbo566290755',
   socketPath: 'mysql-socket-path',
-  password : 'mypass'//'505932qq',
+  password : 'mypass',//'505932qq',
+  port : 3306
   //database : 'db566290755'
 });
 
