@@ -36,12 +36,12 @@ app.use(
     
     connection(mysql,{
         
-        host: 'localhost',
-        user: 'root',
-        password : 'mypass',
-        port : 3306, //port mysql
-        socketPath: 'mysql-socket-path',
-        database : 'logo_quiz'
+      host     : 'localhost', //'db566290755.db.1and1.com',
+      user     : 'root', //'dbo566290755',
+      //socketPath: 'mysql-socket-path',
+      password : 'root',//'mypass',//'505932qq',
+      port : 8889, //port mysql
+      database : 'test'//'db566290755'
     },'request')
 );
 // error handlers
