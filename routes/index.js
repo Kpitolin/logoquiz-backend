@@ -7,17 +7,20 @@ var mysql      = require('mysql');
 var connection = mysql.createConnection({
   host     : 'localhost', //'db566290755.db.1and1.com',
   user     : 'root', //'dbo566290755',
-  socketPath: 'mysql-socket-path',
-  password : 'mypass',//'505932qq',
-  port : 3306
-  //database : 'db566290755'
+  //socketPath: 'mysql-socket-path',
+  password : 'root',//'mypass',//'505932qq',
+  port : 8889,//3306
+  database : 'test'//'db566290755'
 });
 
 
 /* Home page */
 router.get('/', function(req, res, next) {
+console.log('Hello');
+
   res.render('index', { title: 'Logo quizz backend (for tests)' });
 });
+
 
 /* Get current user's rank*/ 
 function get_rank(connection, mail){
@@ -25,8 +28,8 @@ function get_rank(connection, mail){
 	var query = 'SELECT best_score, FIND_IN_SET( best_score, ( SELECT GROUP_CONCAT( best_score' + 
 				 'ORDER BY best_score DESC ) FROM users )) AS rank FROM users WHERE mail = ?'
 
-	connection.query(updateQuery, [mail], function(err, rank){
-	if(err) {
+	connection.query(updateQuery, [mail], function(er, rank){
+	if(er) {
 		console.log('Error in get rank query');
 	  	//res.json({"code" : 100, "status" : "Error in get rank query"});
 	  		 return 0;
@@ -47,9 +50,10 @@ function handle_database(req,res) {
    
         
         var strQuery = 'SELECT * FROM users WHERE mail = ?';
-        connection.query(strQuery,[mail], function(err,rows){
-            if(err)	{
+        connection.query(,[mail], function(er,rows){
+            if(er)	{ 	//error case
             	console.log('Error in select query ...\n\n');
+
 	  			//res.json({"code" : 100, "status" : "Error in select query"});
 	  			return;
 	  		}
@@ -103,13 +107,13 @@ function handle_database(req,res) {
 
 /* GET classement. */
 router.get('/classement/:mail/:score', function(req, res, next) {
-	connection.connect(function(err){
-		if(!err) {
+	connection.connect(function(er){
+		if(!er) {
 		    console.log("Database is connected ... \n\n"); 
 		    handle_database(req, res); 
 		     
 		} else {
-			console.log(err);
+			console.log(er);
 		    console.log("Error connecting database ... \n\n");
 
 		}
