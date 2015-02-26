@@ -1,19 +1,3 @@
-var express = require('express');
-var router = express.Router();
-
-// node mysql
-//var mysql      = require('mysql');
-//var connection  = require('express-myconnection'); 
-/*var connection = mysql.createConnection({
-  host     : 'localhost', //'db566290755.db.1and1.com',
-  user     : 'root', //'dbo566290755',
-  socketPath: 'mysql-socket-path',
-  password : 'mypass',//'505932qq',
-  port : 3306
-  //database : 'db566290755'
-});*/
-
-var app = require('../app');
 
 
 /* Get current user's rank*/ 
@@ -29,37 +13,25 @@ function get_user_rank(mail){
 	  		 return 0;
 	  	}
 	  	else {
-	  		return rank[0].rank;
-	  	 }
+	  			console.log(rank); // to delete
+	  			return rank[0].rank;
+	  	 	}
 
 	});
 }
 
-/* Home page */
-router.get('/', function(req, res) {
-  res.render('index', { title: 'Logo quizz backend (for tests)' });
-});
-
-/* Function for database requests */
-router.get('/classement/:mail/:score', function(req, res) {
+/* GET classement. */
+exports.get_rank =  function(req, res){
 
 	var mail = req.params.mail;
 	var score = req.params.score;
 	var rank = 0;
    
-    req.getConnection(function(err,connection) {
-
-    	if(err){
-    		console.log("Error in getConnection");
-    		console.log(err);
-    		return;
-    	}
-
-        var strQuery = 'SELECT * FROM users WHERE mail = ?';
-        connection.query(strQuery,[mail], function(err,rows){
+    req.getConnection(function(err,connection){
+        var selectQuery = 'SELECT * FROM users WHERE mail = ?';
+        connection.query(selectQuery,[mail], function(err,rows){
             if(err)	{
             	console.log('Error in select query ...\n\n');
-	  			//res.json({"code" : 100, "status" : "Error in select query"});
 	  			return;
 	  		}
 	  		else if (rows.length == 0) { // new user
@@ -68,12 +40,11 @@ router.get('/classement/:mail/:score', function(req, res) {
 	  			connection.query(strQuery, newUser, function(errorInsert,resultInsert){
 	  				if(errorInsert) {
 	  					console.log('Error in insert query ...\n\n');
-	  					//res.json({"code" : 100, "status" : "Error in insert query"});
 	  					return;
 	  				}
 	  				else {
 	  					// get user rank;
-	  		  			rank = get_user_rank(mail);
+	  		  			rank = get_rank(connection, mail);
 	  		  			connection.release();
 	  				}
 			});
@@ -108,32 +79,26 @@ router.get('/classement/:mail/:score', function(req, res) {
 	  		res.send(rank);        
 
         });
-    });
-});
-
-
-//router.get('/', home);// home page, welcoming
-//router.get('/classement/:mail/:score', get_rank);//route get the user's rank 
+   });
+}
 
 /* GET classement. */
-/*router.get('/classement/:mail/:score', function(req, res, next) {
-	connection.connect(function(err){
-		if(err) {
-			console.log(err);
-		    console.log("Error connecting database ... \n\n");
-		     
-		} else {
+/*exports.get_rank =  function(req, res) {
 
-			console.log("Database is connected ... \n\n"); 
-			handle_database(req, res); 
-		
-		}
+	req.getConnection(function(err,connection){
+
+		connection.connect(function(err){
+			if(!err) {
+		   	 		console.log("Database is connected ... \n\n"); 
+		    		//handle_database(req, res); 
+		     
+			} else {
+					console.log(err);
+		    		console.log("Error connecting database ... \n\n");
+
+				}
+
+		});
 
 	});
-
-	connection.end(); 
-
-});*/
-	
-//var app       =    express();
-module.exports = router;
+}*/

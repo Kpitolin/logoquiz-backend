@@ -7,12 +7,13 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
 var app = express();
+var router = express.Router();
 
 // node mysql
 var http = require('http'); 
 // node mysql
 var mysql = require('mysql');
-//var connection  = require('express-myconnection'); 
+var connection  = require('express-myconnection'); 
 
 
 // view engine setup
@@ -29,12 +30,24 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+// set connection 
+app.use(
+    
+    connection(mysql,{
+        
+        host: 'localhost',
+        user: 'root',
+        password : 'mypass',
+        port : 3306, //port mysql
+        socketPath: 'mysql-socket-path',
+        database : 'logo_quiz'
+    },'request')
+);
+// error handlers
 app.use(function(req,res,next){
     next();
 });
-
-app.use('/', routes);
-// error handlers
 
 // development error handler
 // will print stacktrace
@@ -59,11 +72,13 @@ app.use(function(err, req, res, next) {
 });
 
 
+//app.get('/', routes.home());//route index, Welcoming 
+//app.get('/classement/:mail/:score', routes.get_rank());//route get user's rank
 
-
-
-module.exports = app;
-/*http.createServer(app).listen(app.get('port'), function(){
+app.use(router);
+app.use('/', routes);
+http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
-});*/
-var server = app.listen(80);
+});
+module.exports = app;
+//var server = app.listen(80);
