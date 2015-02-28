@@ -36,10 +36,9 @@ app.use(
     
     connection(mysql,{
         
-      host     : 'localhost', //'db566290755.db.1and1.com',
-      user     : 'root', //'dbo566290755',
-      //socketPath: 'mysql-socket-path',
-      password : 'root',//'mypass',//'505932qq',
+      host     : 'localhost',
+      user     : 'root',
+      password : 'root',
       port : 8889, //port mysql
       database : 'test'//'db566290755'
     },'request')
@@ -72,13 +71,9 @@ app.use(function(err, req, res, next) {
 });
 
 
-//app.get('/', routes.home());//route index, Welcoming 
-//app.get('/classement/:mail/:score', routes.get_rank());//route get user's rank
-
 app.use(router);
 app.use('/', routes);
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
 module.exports = app;
-//var server = app.listen(80);
