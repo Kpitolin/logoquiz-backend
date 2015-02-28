@@ -88,6 +88,7 @@ router.get('/classement/:mail/:score', function(req, res) {
 	  				// Send response
 	  				res.header("Access-Control-Allow-Origin", "*");
   					res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	  				res.type("json");
 	  				res.send(rank[0]);  
 			  	 }
 
