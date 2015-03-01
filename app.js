@@ -17,7 +17,8 @@ var connection  = require('express-myconnection');
 
 
 // view engine setup
-app.set('port', process.env.PORT || 4300);
+//app.set('port', process.env.PORT || 4300);
+app.set('port', process.env.OPENSHIFT_NODEJS_PORT || 4300);
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -73,7 +74,10 @@ app.use(function(err, req, res, next) {
 
 app.use(router);
 app.use('/', routes);
-http.createServer(app).listen(app.get('port'), function(){
+//
+var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
+//var port = process.env.OPENSHIFT_NODEJS_PORT || 4300;
+http.createServer(app).listen(app.get('port'), ipaddress, function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
 module.exports = app;
